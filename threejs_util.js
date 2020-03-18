@@ -16,12 +16,10 @@ import { Vector2, Vector3, Vector4, Matrix4, Quaternion,
          TextureLoader,
          DirectionalLight,
          SpotLight,
-         PointLight          } from './three/Three.js';
+         PointLight          } from './three.module.js';
 import { Sky }                 from "./jsm/objects/Sky.js";
 import { Lensflare,
          LensflareElement    } from './jsm/objects/Lensflare.js';
-import { CSS3DRenderer,
-         CSS3DObject         } from './jsm/renderers/CSS3DRenderer.js';
 /* </release> */
 
 
@@ -208,7 +206,6 @@ export {
     /* jsm */
     Sky,
     Lensflare, LensflareElement, LensflareLight,
-    CSS3DRenderer, CSS3DObject,
     /* clmagic */
     RenderSystem, Camera2, TextureArray
 };
