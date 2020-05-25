@@ -1,10 +1,10 @@
-import * as THREE from '../three.module.js';
-import { PLYLoader } from '../jsm/loaders/PLYLoader.js';
-import { OBJLoader } from '../jsm/loaders/OBJLoader.js'
-import { FlyControls } from '../jsm/controls/FlyControls.js';
-import { FirstPersonControls } from '../jsm/controls/FirstPersonControls.js';
-import { ImprovedNoise } from '../jsm/math/ImprovedNoise.js'
-import { Sky } from '../jsm/objects/Sky.js'
+import * as THREE from '../threejs/three.module.js';
+import { PLYLoader } from '../threejs/jsm/loaders/PLYLoader.js';
+import { OBJLoader } from '../threejs/jsm/loaders/OBJLoader.js'
+import { FlyControls } from '../threejs/jsm/controls/FlyControls.js';
+import { FirstPersonControls } from '../threejs/jsm/controls/FirstPersonControls.js';
+import { ImprovedNoise } from '../threejs/jsm/math/ImprovedNoise.js'
+import { Sky } from '../threejs/jsm/objects/Sky.js'
 
 // system elements
 var gClock = new THREE.Clock();
