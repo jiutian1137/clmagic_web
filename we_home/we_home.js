@@ -22,8 +22,29 @@ var gTreeGeometry;
 var gSunflowerGeometry;
 var gCrocodileGeometry;
 
+var gLoadInformation_fence100m;
+var gLoadInformation_fence47_5m;
+var gLoadInformation_home;
+var gLoadInformation_tree_leaf;
+var gLoadInformation_sunflower;
+var gLoadInformation_static_pond;
+var gLoadInformation_crocodile;
+
+
 init();
 animate();
+
+function update_infotable() {
+	var _Infotable = document.getElementById("main_infotable");
+	var _Str = gLoadInformation_fence100m + '</br>'
+		+ gLoadInformation_fence47_5m + '</br>'
+		+ gLoadInformation_home + '</br>'
+		+ gLoadInformation_tree_leaf + '</br>'
+		+ gLoadInformation_sunflower + '</br>'
+		+ gLoadInformation_static_pond + '</br>'
+		+ gLoadInformation_crocodile;
+	_Infotable.innerHTML = '<font style="color:red">' + _Str + '</font>';
+}
 
 function generateHeight(width, height) {
 
@@ -178,6 +199,7 @@ function init() {
 
 	// PLY file
 	var loader = new PLYLoader();
+	gLoadInformation_fence100m = 'wait... fence100m';
 	loader.load('../media/fence100m.ply', function (_Geometry) {
 		_Geometry.computeVertexNormals();
 
@@ -208,8 +230,12 @@ function init() {
 		gScene.add(_Fence_left);
 		gScene.add(_Fence_right);
 		gScene.add(_Fence_back);
+
+		gLoadInformation_fence100m = "OK fence100m";
+		update_infotable();
 	});
 
+	gLoadInformation_fence47_5m = 'wait... fence47_5m';
 	loader.load('../media/fence47_5m.ply', function (_Geometry) {
 		_Geometry.computeVertexNormals();
 
@@ -231,8 +257,12 @@ function init() {
 
 		gScene.add(_Fence_left);
 		gScene.add(_Fence_right);
+
+		gLoadInformation_fence47_5m = ' OK fence47_5m';
+		update_infotable();
 	});
 
+	gLoadInformation_home = 'wait... home';
 	loader.load('../media/home_model.ply', function (_Geometry) {
 		_Geometry.computeVertexNormals();
 		var _Home = new THREE.Mesh(_Geometry, gCommonMaterial);
@@ -242,9 +272,13 @@ function init() {
 		_Home.castShadow = true;
 		_Home.receiveShadow = true;
 		gScene.add(_Home);
+
+		gLoadInformation_home = 'OK home';
+		update_infotable();
 	});
 
 	var _OBJloader = new OBJLoader();
+	gLoadInformation_tree_leaf = 'wait... maple';
 	_OBJloader.load("../media/tree_leaf_model.obj", function (_Maple) {
 		gTreeGeometry = _Maple.children[0].geometry;
 
@@ -272,8 +306,12 @@ function init() {
 			//_Maple.castShadow = true;
 			gScene.add(_Maple);
 		}
+
+		gLoadInformation_tree_leaf = 'OK maple';
+		update_infotable();
 	});
 
+	gLoadInformation_sunflower = 'wait... sunflower';
 	_OBJloader.load('../media/sunflower_model.obj', function (_Sunflower) {
 		gSunflowerGeometry = _Sunflower.children[0].geometry;
 
@@ -301,15 +339,23 @@ function init() {
 				//++count;
 			}
 		}
+
+		gLoadInformation_sunflower = 'OK sunflower';
+		update_infotable();
 	});
 
+	gLoadInformation_static_pond = 'wait... pond';
 	_OBJloader.load('../media/static_pond_model.obj', function (_Pond) {
 		var _Mesh = new THREE.Mesh(_Pond.children[0].geometry, gWaterMaterial);
 		_Mesh.position.x = 0;
 		_Mesh.position.z = -150;
 		gScene.add(_Mesh);
+
+		gLoadInformation_static_pond = 'OK pond';
+		update_infotable();
 	});
 
+	gLoadInformation_crocodile = 'wait... crocodile';
 	_OBJloader.load('../media/crocodile_modell.obj', function (_Crocodile) {
 		gCrocodileGeometry = _Crocodile.children[0].geometry;
 		for (var i = 0; i != 20; ++i) {
@@ -323,10 +369,15 @@ function init() {
 			}
 			gScene.add(_Mesh);
 		}
+
+		gLoadInformation_crocodile = 'OK crocodile';
+		update_infotable();
 	});
 
 	// Lights
 	addShadowedLight(gSunPosition.x, gSunPosition.y, gSunPosition.z, 0xD3D3D3, 1);
+
+	update_infotable();
 }
 
 function addShadowedLight(x, y, z, color, intensity) {
