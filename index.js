@@ -15,10 +15,10 @@ function initialier() {
     g_render_system.camera.position.y = 111.0;
     g_render_system.camera.position.z = 35.0;
 
-    g_high_ladder.position.z = -30.0;
-    g_high_ladder.receiveShadow = true;
-    g_high_ladder.castShadow = true;
-    g_render_system.scene.add(g_high_ladder);
+    //g_high_ladder.position.z = -30.0;
+    //g_high_ladder.receiveShadow = true;
+    //g_high_ladder.castShadow = true;
+    //g_render_system.scene.add(g_high_ladder);
 
     g_plane2.position.z = -30.0;
     g_plane2.position.y = 100.0;
