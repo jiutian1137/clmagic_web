@@ -1,6 +1,6 @@
 <html>
     <head>
-        <title>src/math/lapack/vector.h</title>
+        <title>src/calculation/lapack/vector.h</title>
         <style>
             body {
                 background-color: ghostwhite;
@@ -9,7 +9,7 @@
             .struct {
                 margin-left: 20px;
                 font-size: 20px;
-                color:blue;
+                color: blue;
             }
 
             .function {
@@ -31,6 +31,10 @@
                 color: blue;
             }
 
+            macro {
+                color: mediumvioletred;
+            }
+
             em {
                 color: darksalmon;
             }
@@ -39,7 +43,7 @@
                 display: block;
             }
 
-            keyword{
+            keyword {
                 margin-left: 20px;
                 color: cadetblue;
             }
@@ -52,38 +56,106 @@
     </head>
     
     <body>
-        <code><keyword>_Ty</keyword>: 任意类型, 在向量模板中指标量类型</code>
+        <code><keyword>_Ts</keyword>: (type of scalar)标量, 任意类型</code>
+        
         <br />
-        <code><keyword>_Block</keyword>: 任意类型, 向量运算的方式, 会影响数据结构的对齐<samp>int, float, double, __m128, __m256, __m512</samp></code>
+        
+        <code><keyword>_Tb</keyword>: (type of block)块, 任意类型, 向量运算的方式, 会影响数据结构的对齐<samp>int, float, double, __m128, __m256, __m512</samp></code>
+        
         <br />
-        <code><keyword>思想</keyword>: 一个向量是由很多个块(_Block)组成, 最小的一种块是标量(_Ty)</code>
+        
+        <code><keyword>思想</keyword>: 一个向量是由很多个块(_Block)组成, 最小的一种块是标量(_Ts)</code>
+        
         <br />
+        
         <code>
-           <keyword>SIMD</keyword>(single introduce multiples data): 可以想象一个模板按压下去就可以生产一样物品, 如果把这个模板造得更大按压一次可以生产多样物品, 这样效率会变快,
-            但使用更大得模板按压一次也会需要更多些体力, ...
+           <keyword>SIMD</keyword>(single introduce multiples data): 可以想象一个模板按压下去就可以生产一样物品, 如果把这个模板造得更大按压一次可以生产多样物品, 这样m每次按压的效率会变快,
+            但使用更大的模板按压一次也会需要更多些体力, ...
         </code>
+
         <br />
-        <code>
-            <keyword>子向量</keyword>(subvector<_Ty, _Block>): 可以看作为<引用>, 可以引用任何类型向量(包括不局限有: 非SIMD对齐要求, 非连续内存), 
-            工具类<strong>_Accelerate_subvector<_Ty, _Block></strong>有静态函数<em>transform</em>(...), <em>comulate</em>(...), <em>norm</em>(...),
-            可以参照norm(...)的实现方式进行扩展, 还有一系列可直接使用函数<em>add</em>,<em>sub</em>, <em>mul</em>, <em>...</em>, <em>dot</em>, <em>normalize</em> 
-        </code>
+        
+        <div><keyword>核心:</keyword> 
+            <div class="function">
+                <code>vector_size&lt;_Ts, _Tb&gt;</code>
+            </div>
+            <div class="function">
+                <code>_Vector_operation&lt;_Ts, _Tb&gt;</code>
+                <div class="desc">向量的运算方式</div>
+            </div>
+        </div>
+        
+        <div><keyword>其他:</keyword>
+            <div class="function">
+                <code>_SIMD4_t&lt;_Ts&gt;</code>
+            </div>
+            <div class="function">
+                <code>_SIMD8_t&lt;_Ts&gt;</code>
+            </div>
+        </div>
+
+        <div><keyword>子向量:</keyword>
+            <div class="function">
+                <code><em>subvector&lt;_Ts,_Tb&gt;</em> = reference of vector <em>+</em> memory can discontinuity <em>+</em> auto_vector_operation&lt;_Ts,_Tb&gt;</code>
+            </div>
+        </div>
+        <div><keyword>向量(固定长度):</keyword>
+            <div class="function">
+                <code><em>vector&lt;_Ts,_Size,_Tb&gt;</em> = stack memory <em>+</em> fastest_vector_operation&lt;_Ts,_Tb&gt;</code>
+            </div>
+        </div>
+        <div><keyword>单位向量(固定长度):</keyword>
+            <div class="function">
+                <code><em>unit_vector&lt;_Ts,_Size,_Tb&gt;</em> = vector&lt;_Ts,_Size,_Tb&gt; <em>+</em> length is 1</code>
+            </div>
+        </div>
+        <div><keyword>向量(动态长度):</keyword>
+            <div class="function">
+                <code><em>vector_any&lt;_Ts,_Tb&gt;</em> = heap memory <em>+</em> fastest_vector_operation&lt;_Ts,_Tb&gt;</code>
+            </div>
+        </div>
+
         <br />
-        <code>
-            <keyword>向量</keyword>(vector<_Ty, _Size, _Black>): <keyword-2>推荐使用</keyword-2>, 最快的运算(通过_CONSTEXPR_IF), 
-            库中几乎所有向量函数都是以为vector<_Ty, _Size, _Black>参数(数学中很少有改变向量长度, 因此不可变长度向量更接近真理), 内存自动对齐<_Block对齐要求>,
-        </code>
+
+        <div>
+            <keyword>宏定义</keyword>:
+            <div class="function">
+                <macro>VECTORN</macro> vector&lt;_Ts,_Size,_Tb&gt;
+            </div>
+            <div class="function">
+                <macro>VECTOR2</macro> vector&lt;_Ts,2,_Tb&gt;
+            </div>
+            <div class="function">
+                <macro>VECTOR3</macro> vector&lt;_Ts,3,_Tb&gt;
+            </div>
+            <div class="function">
+                <macro>VECTOR4</macro> vector&lt;_Ts,4,_Tb&gt;
+            </div>
+            <div class="function">
+                <macro>UNIT_VECTORN</macro> unit_vector&lt;_Ts,_Size,_Tb&gt;
+            </div>
+            <div class="function">
+                <macro>UNIT_VECTOR3</macro> unit_vector&lt;_Ts,3,_Tb&gt;
+            </div>
+        </div>
+
         <br />
-        <code>
-            <keyword>动态长度_向量</keyword>(vector_any<_Ty, _Black>): 除非需要修改向量长度, 否则最好使用vector<...>, 也可以当作vector<...>使用(引用转换),
-            <code class="function"><keyword-2>vector_any<_Ty,_Block> _Vany = {1, 2, ..., N};</keyword-2></code>
-            <code class="function"><keyword-2>vector<_Ty, N, _Block>& _Vec = *reinterpret_cast##vector<_Ty, N, _Block>*##(_Vany.ptr());</keyword-2></code>
-            <code  class="function" style="color:green">/* '##'换成一对'<>' */</code>
-        </code>
+
+        <div><keyword>重要函数</keyword>: <br />
+            <div class="function">
+                <code>void vector::<em>for_each_*</em>(...)</code>
+                <div class="desc">其他运算的基石</div>
+            </div>
+             <div class="function">
+                 <code>dst_vector <em>shuffle</em>(src_vector, number, number, number, number, ...)</code>
+                <div class="desc">重组src_vector的元素 到 dst_vector</div>
+            </div>
+        </div>
+
         <br />
         <hr />
 
-        <table border="2" cellpadding="3" cellspacing="0" style="text-align:center">
+        <table border="1" cellpadding="3" cellspacing="0" style="text-align:center">
             <tr>
                 <td>引用转换(ref-cast)</td>
                 <td>subvector<_Ty, _Block></td>
@@ -117,6 +189,7 @@
                 </td>
             </tr>
         </table>
+       
         <br />
         <hr />
 
