@@ -31,8 +31,8 @@ function is_source(_File) {
 	return _Is_typeX(_File, 'source');
 }
 
-// get <polyline class=className points=v> </polyline>
 function cast_svg_polyline(v, style) {
+	// get <polyline style='style' points='v'> </polyline>
 	var _Str = "<polyline style='" + style + "' ";
 
 	_Str += "points='";
@@ -46,6 +46,7 @@ function cast_svg_polyline(v, style) {
 }
 
 function cast_svg_line(p1, p2, style) {
+	// get <line style='style' x1='p1.x' y1='p1.y' x2='p2.x' y2='p2.y'> </line>
 	var _Str = "<line style='" + style + "' ";
 	_Str += "x1='" + p1.x + "' ";
 	_Str += "y1='" + p1.y + "' ";
@@ -54,8 +55,8 @@ function cast_svg_line(p1, p2, style) {
 	return (_Str + "</line>")
 }
 
-// get <rect class=classname x=p.x y=p.y width=w height=h> </rect>
 function cast_svg_rect(p, w, h, style) {
+	// get <rect style='style' x='p.x' y='p.y' width='w' height='h'> </rect>
 	var _Str = "<rect style='" + style + "' ";
 	_Str += "x='" + p.x + "' ";
 	_Str += "y='" + p.y + "' ";
@@ -64,6 +65,7 @@ function cast_svg_rect(p, w, h, style) {
 
 	return (_Str + "</rect>");
 }
+
 
 function four_point_polyline(p1, p2, off) {
 	if (p1.x == p2.x) {
@@ -83,13 +85,11 @@ function four_point_polyline(p1, p2, off) {
 		{ x: p2.x, y: p2.y });
 }
 
-
-
 function bezier_polyline(p1, p3) {
 	var p2 = { x: p1.x + 40, y: p1.y };
 	// C: 1 2 1
 	var v = Array(p1);
-	for (var t = 0.05; t < 1.1; t += 0.05) {
+	for (var t = 0.05; t < 1.0; t += 0.05) {
 		var b1 = Bernstein(2, 0, t, 1);
 		var b2 = Bernstein(2, 1, t, 2);
 		var b3 = Bernstein(2, 2, t, 1);
@@ -275,11 +275,11 @@ function cast_svg_links(_Pos) {
 	return _Str;
 }
 
-function source_onclick(_Source_position) {
+function source_onclick(_Source_position) {// LongJiangnan 2020.06.05
 	var content = document.getElementById('content');
 	var paint   = document.getElementById('paint');
 
-	RowHeight  = content.rows[0].cells[0].clientHeight;
+	RowHeight = content.rows[0].cells[0].clientHeight;
 	CellHeight = RowHeight / 10;
 	CellWidth  = window.innerWidth / 4;
 	var x1 = _Source_position.col * CellWidth;
@@ -297,9 +297,9 @@ function _Cast_svg_source(_Source) {
 		_Str += '<span ' + _Onclick + '><em>' + _Source.name + '</em></span> </br></br>';
 
 		if ((_Source.position + 1) % 40 == 0) {// next-line
-			_Str += '</td></tr> <tr><td>';
+			_Str += '</td></tr> <tr><td valign="top">';
 		} else if ((_Source.position + 1) % 10 == 0) {
-			_Str += '</td> <td>';
+			_Str += '</td> <td valign="top">';
 		}
 	}
 	return _Str;
@@ -310,9 +310,9 @@ function _Cast_svg_filter(_Filter) {
 	if (_Filter.position != -1) {
 		_Str += "<span> + <strong>" + _Filter.name + "</strong></span> </br></br>";
 		if ((_Filter.position + 1) % 40 == 0) {// next-line
-			_Str += '</td></tr> <tr><td>';
+			_Str += '</td></tr> <tr><td valign="top">';
 		} else if ((_Filter.position + 1) % 10 == 0) {
-			_Str += '</td> <td>';
+			_Str += '</td> <td valign="top">';
 		}
 	}
 	return _Str;
@@ -359,112 +359,155 @@ function expand_all(_File){
 }
 
 function initializer() {
-	var cknagic_basic_h     = clmagic.Source('basic.h');
-	var cknagic_math_h      = clmagic.Source('math.h');
-	var clmagic_directX12_h = clmagic.Source('directX12.h');
-
-
-	var clmagic_math = clmagic.Filter('math');
-	// <general>
-	var clmagic_math_general            = clmagic_math.Filter('general');
-	var clmagic_math_general_clmagic_h  = clmagic_math_general.Source('clmagic.h');
-	var clmagic_math_general_general_h  = clmagic_math_general.Source('general.h');
-	var clmagic_math_general_bitset_h   = clmagic_math_general.Source('bitset.h');
-	var clmagic_math_general_rational_h = clmagic_math_general.Source('rational.h');
-	var clmagic_math_general_unit_h     = clmagic_math_general.Source('unit.h');
-	var clmagic_math_general_real_h     = clmagic_math_general.Source('real.h');
-	var clmagic_math_general_simd_h     = clmagic_math_general.Source('simd.h');
-
-	clmagic_math_general_rational_h.Include(clmagic_math_general_bitset_h);
-
-	clmagic_math_general_unit_h.Include(clmagic_math_general_rational_h);
-	// </general>
-
-	// <lapack>
-	var clmagic_math_lapack = clmagic_math.Filter('lapack');
-
-	var clmagic_math_lapack_vector_h    = clmagic_math_lapack.Source('vector.h');
-	var clmagic_math_lapack_matrix_h    = clmagic_math_lapack.Source('matrix.h');
-	var clmagic_math_lapack_geometry_h  = clmagic_math_lapack.Source('geometry.h');
-	var clmagic_math_lapack_Euler_h     = clmagic_math_lapack.Source('Euler.h');
-	var clmagic_math_lapack_Rodrigues_h = clmagic_math_lapack.Source('Rodrigues.h');
-
-	clmagic_math_lapack_vector_h.Include( clmagic_math_general_clmagic_h );
-	clmagic_math_lapack_vector_h.Include( clmagic_math_general_bitset_h);
-	clmagic_math_lapack_vector_h.Include( clmagic_math_general_real_h );
-	clmagic_math_lapack_vector_h.Include( clmagic_math_general_simd_h );
-
-	clmagic_math_lapack_matrix_h.Include(clmagic_math_lapack_vector_h);
-
-	clmagic_math_lapack_Euler_h.Include(clmagic_math_general_unit_h);
-	clmagic_math_lapack_Euler_h.Include(clmagic_math_lapack_matrix_h);
-
-	clmagic_math_lapack_Rodrigues_h.Include(clmagic_math_general_unit_h);
-	clmagic_math_lapack_Rodrigues_h.Include(clmagic_math_lapack_matrix_h);
-
-	clmagic_math_lapack_geometry_h.Include(clmagic_math_lapack_vector_h);
-	clmagic_math_lapack_geometry_h.Include(clmagic_math_lapack_matrix_h);
-	clmagic_math_lapack_geometry_h.Include(clmagic_math_lapack_Euler_h);
-	clmagic_math_lapack_geometry_h.Include(clmagic_math_lapack_Rodrigues_h);
-	//</lapack>
-
-	// <complex>
-	var clmagic_math_complex = clmagic_math.Filter('complex');
-	var clmagic_math_complex_WilliamRowanHamilton_h = clmagic_math_complex.Source('WilliamRowanHamilton.h');
-
-	clmagic_math_lapack_geometry_h.Include(clmagic_math_complex_WilliamRowanHamilton_h);// 
-	clmagic_math_complex_WilliamRowanHamilton_h.Include(clmagic_math_general_unit_h);
-	clmagic_math_complex_WilliamRowanHamilton_h.Include(clmagic_math_lapack_vector_h);
-	clmagic_math_complex_WilliamRowanHamilton_h.Include(clmagic_math_lapack_matrix_h);
-	// </complex>
-	// </complex>
-
-	// <physics>
-	var clmagic_math_physics = clmagic_math.Filter('physics');
-	var clmagic_math_physics_atmosphere_scattering_h = clmagic_math_physics.Source('atmosphere_scattering.h');
-	// </physics>
-
-	// <fraction>
-	var clmagic_math_fraction = clmagic_math.Filter('fraction');
-	var clmagic_math_fraction_fraction_h = clmagic_math_fraction.Source('fraction.h'); 
-	var clmagic_math_fraction_Perlin_h = clmagic_math_fraction.Source('Perlin.h'); 
-	var clmagic_math_fraction_Worley_h = clmagic_math_fraction.Source('Worley.h'); 
-	// </fraction>
+	var clmagic_basic_h     = clmagic.Source('basic.h');
+	var clmagic_math_h      = clmagic.Source('math.h');
 
 	// <clmagic/basic/>
 	var clmagic_basic = clmagic.Filter('basic');
-	var clmagic_basic_algorithm  = clmagic_basic.Source('algorithm.h');
-	var clmagic_basic_chrono     = clmagic_basic.Source('chrono.h');
-	var clmagic_basic_functional = clmagic_basic.Source('functional.h');
-	var clmagic_basic_fileproxy  = clmagic_basic.Source('fileproxy.h');
-	var clmagic_basic_fstream    = clmagic_basic.Source('fstream.h');
-	var clmagic_basic_logstream  = clmagic_basic.Source('logstream.h');
-	var clmagic_basic_logcout    = clmagic_basic.Source('logcout.h');
-	var clmagic_basic_string     = clmagic_basic.Source('string.h');
-	var clmagic_basic_timer_wheel = clmagic_basic.Source('timer_wheel.h');
-	var clmagic_basic_concurrent_resource = clmagic_basic.Source('concurrent_resource.h');
+	{
+		var algorithm_h   = clmagic_basic.Source('algorithm.h');
+		var chrono_h      = clmagic_basic.Source('chrono.h');
+		var functional_h  = clmagic_basic.Source('functional.h');
+		var fileproxy_h   = clmagic_basic.Source('fileproxy.h');
+		var fstream_h     = clmagic_basic.Source('fstream.h');
+		var logstream_h   = clmagic_basic.Source('logstream.h');
+		var logcout_h     = clmagic_basic.Source('logcout.h');
+		var string_h      = clmagic_basic.Source('string.h');
+		var timer_wheel_h = clmagic_basic.Source('timer_wheel.h');
+		var concurrent_resource_h = clmagic_basic.Source('concurrent_resource.h');
+		var winapi_util_h = clmagic_basic.Source('winapi_util.h');
+		var renderable_h  = clmagic_basic.Source('renderable.h');
+	}
 
-	// <directX12>
-	var clmagic_directX12 = clmagic.Filter('directX12');
-	var clmagic_directX12_d3dx12_h         = clmagic_directX12.Source('d3dx12.h(Reference)');
-	var clmagic_directX12_enum_string_h    = clmagic_directX12.Source('enum_string.h');
-	var clmagic_directX12_dxcore_h         = clmagic_directX12.Source('dxcore.h');
-	var clmagic_directX12_frame_resource_h = clmagic_directX12.Source('frame_resource.h');
-	var clmagic_directX12_hlsl_h           = clmagic_directX12.Source('hlsl.h');
-	var clmagic_directX12_mesh_h           = clmagic_directX12.Source('mesh.h');
+	var clmagic_calculation = clmagic.Filter('calculation');
+	{
+		var general = clmagic_calculation.Filter('general');
+		{
+			var clmagic_h  = general.Source('clmagic.h');
+			var general_h  = general.Source('general.h');
+			var bitset_h   = general.Source('bitset.h');
+			var rational_h = general.Source('rational.h');
+			var unit_h     = general.Source('unit.h');
+			var real_h     = general.Source('real.h');
+			var simd_h     = general.Source('simd.h');
+			rational_h.Include(bitset_h);
+			unit_h.Include(    rational_h);
+		}
 
-	clmagic_directX12_dxcore_h.Include(clmagic_directX12_enum_string_h);
-	clmagic_directX12_frame_resource_h.Include(clmagic_directX12_dxcore_h);
-	clmagic_directX12_hlsl_h.Include(clmagic_directX12_dxcore_h);
-	clmagic_directX12_mesh_h.Include(clmagic_directX12_dxcore_h);
-	// </directX12>
+		var lapack = clmagic_calculation.Filter('lapack');
+		{
+			var vector_h    = lapack.Source('vector.h');
+			var matrix_h    = lapack.Source('matrix.h');
+			var geometry_h  = lapack.Source('geometry.h');
+			var Euler_h     = lapack.Source('Euler.h');
+			var Rodrigues_h = lapack.Source('Rodrigues.h');
 
-	clmagic_directX12_h.Include(clmagic_directX12_d3dx12_h);
-	clmagic_directX12_h.Include(clmagic_directX12_dxcore_h);
-	clmagic_directX12_h.Include(clmagic_directX12_enum_string_h);
-	clmagic_directX12_h.Include(clmagic_directX12_frame_resource_h);
-	clmagic_directX12_h.Include(clmagic_directX12_hlsl_h);
-	clmagic_directX12_h.Include(clmagic_directX12_mesh_h);
+			vector_h.Include( general.Source('clmagic.h') );
+			vector_h.Include( general.Source('bitset.h') );
+			vector_h.Include( general.Source('real.h') );
+			vector_h.Include( general.Source('simd.h') );
+
+			matrix_h.Include( vector_h );
+
+			Euler_h.Include( general.Source('unit.h') );
+			Euler_h.Include( matrix_h );
+
+			Rodrigues_h.Include( general.Source('unit.h') );
+			Rodrigues_h.Include( matrix_h );
+
+			geometry_h.Include( vector_h );
+			geometry_h.Include( matrix_h );
+			geometry_h.Include( Euler_h );
+			geometry_h.Include( Rodrigues_h );
+		}
+
+		var complex = clmagic_calculation.Filter('complex');
+		{
+			var WilliamRowanHamilton_h = complex.Source('WilliamRowanHamilton.h');
+
+			WilliamRowanHamilton_h.Include( general.Source('unit.h') );
+			WilliamRowanHamilton_h.Include( lapack.Source('vector.h') );
+			WilliamRowanHamilton_h.Include( lapack.Source('matrix.h') );
+			lapack.Source('geometry.h').Include(WilliamRowanHamilton_h);// 
+		}
+
+		var physics = clmagic_calculation.Filter('physics');
+		{
+			var atmosphere_scattering_h = physics.Source('atmosphere_scattering.h');
+		}
+
+		var fraction = clmagic_calculation.Filter('fraction');
+		{
+			var fraction_h = fraction.Source('fraction.h'); 
+			var Perlin_h   = fraction.Source('Perlin.h'); 
+			var Worley_h   = fraction.Source('Worley.h'); 
+		}
+	}
+
+	// <DirectX>
+	var clmagic_DirectX = clmagic.Filter('DirectX');
+	{
+		var hlsl_h      = clmagic_DirectX.Source('hlsl.h');
+		var d3d12core   = clmagic_DirectX.Filter('d3d12core');
+		var d3d12core_h = clmagic_DirectX.Source('d3d12core.h');
+		{
+			var d3dx12_h              = d3d12core.Source('d3dx12.h');
+			var enum_string_h         = d3d12core.Source('enum_string.h');
+			var packaged_comptr_h     = d3d12core.Source('packaged_comptr.h');
+			var IDXGIFactory_h        = d3d12core.Source('IDXGIFactory.h');
+			var ID3D12Device_h        = d3d12core.Source('ID3D12Device.h');
+			var ID3D12CommandObjects_h = d3d12core.Source('ID3D12CommandObjects.h');
+			var ID3D12Fence_h         = d3d12core.Source('ID3D12Fence.h');
+			var ID3D12RootSignature_h = d3d12core.Source('ID3D12RootSignature.h');
+			var ID3D12PipelineState_h = d3d12core.Source('ID3D12PipelineState.h');
+			var ID3D12Resource_h      = d3d12core.Source('ID3D12Resource.h');
+			var ID3D12Resource_b_h    = d3d12core.Source('ID3D12Resource_b.h');
+			var ID3D12Resource_t_h    = d3d12core.Source('ID3D12Resource_t.h');
+			var IDXGISwapChain_h      = d3d12core.Source('IDXGISwapChain.h');
+			var ID3D12DescriptorHeap_h = d3d12core.Source('ID3D12DescriptorHeap.h');
+
+			IDXGIFactory_h.Include(       packaged_comptr_h);
+			ID3D12Device_h.Include(       IDXGIFactory_h);
+			ID3D12Device_h.Include(       d3dx12_h);
+			ID3D12CommandObjects_h.Include(ID3D12Device_h);
+			ID3D12Fence_h.Include(        ID3D12Device_h);
+			ID3D12Fence_h.Include(        ID3D12CommandObjects_h);
+			ID3D12RootSignature_h.Include(ID3D12Device_h);
+			ID3D12RootSignature_h.Include(enum_string_h);
+			ID3D12PipelineState_h.Include(ID3D12RootSignature_h);
+			ID3D12Resource_h.Include(     ID3D12Device_h);
+			ID3D12Resource_h.Include(     ID3D12Fence_h);
+			ID3D12Resource_h.Include(     ID3D12CommandObjects_h);
+			ID3D12Resource_h.Include(     enum_string_h);
+			ID3D12Resource_b_h.Include(   ID3D12Resource_h);
+			ID3D12Resource_t_h.Include(   ID3D12Resource_h);
+			IDXGISwapChain_h.Include(     IDXGIFactory_h);
+			IDXGISwapChain_h.Include(     ID3D12Resource_t_h);
+			ID3D12DescriptorHeap_h.Include(ID3D12Resource_t_h);
+			d3d12core_h.Include(d3dx12_h);
+			d3d12core_h.Include(enum_string_h);
+			d3d12core_h.Include(packaged_comptr_h);
+			d3d12core_h.Include(IDXGIFactory_h);
+			d3d12core_h.Include(ID3D12Device_h);
+			d3d12core_h.Include(ID3D12CommandObjects_h);
+			d3d12core_h.Include(ID3D12Fence_h);
+			d3d12core_h.Include(ID3D12RootSignature_h);
+			d3d12core_h.Include(ID3D12PipelineState_h);
+			d3d12core_h.Include(ID3D12Resource_h);
+			d3d12core_h.Include(ID3D12Resource_b_h);
+			d3d12core_h.Include(ID3D12Resource_t_h);
+			d3d12core_h.Include(IDXGISwapChain_h);
+		}
+		var d3d12window_h        = clmagic_DirectX.Source('d3d12window.h');
+		var d3d12renderable_h    = clmagic_DirectX.Source('renderable.h');
+		var d3d12frameresource_h = clmagic_DirectX.Source('frame_resource.h');
+		d3d12window_h.Include(    d3d12core_h);
+		d3d12window_h.Include(    clmagic_basic.Source("winapi_util.h"));
+		d3d12renderable_h.Include(d3d12core_h);
+		d3d12renderable_h.Include(clmagic_basic.Source("renderable.h"));
+		d3d12frameresource_h.Include(d3d12core_h);
+	}
+	// </DirectX>
 }
 
 function display() {
