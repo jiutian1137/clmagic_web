@@ -1,0 +1,360 @@
+﻿<html>
+    <head>
+        <title>src/calculation/lapack/vector.h</title>
+        <style>
+            body {
+                background-color: ghostwhite;
+            }
+
+            .struct {
+                margin-left: 20px;
+                font-size: 20px;
+                color: blue;
+            }
+
+            .function {
+                margin-left: 40px;
+                font-size: 14px;
+                color: cornflowerblue;
+            }
+
+            .desc {
+                margin-left: 20px;
+                font-size: 11px;
+                font-weight: lighter;
+                color: black;
+            }
+
+            .descspec {
+                margin-left: 20px;
+                font-size: 11px;
+                color: blue;
+            }
+
+            macro {
+                color: mediumvioletred;
+            }
+
+            em {
+                color: darksalmon;
+            }
+
+            code {
+                display: block;
+            }
+
+            keyword {
+                margin-left: 20px;
+                color: cadetblue;
+            }
+
+            keyword-2 {
+                font-weight: 900;
+                color: mediumvioletred;
+            }
+        </style>
+    </head>
+    
+    <body>
+        <code><keyword>_Ts</keyword>: (type of scalar)标量, 任意类型</code>
+        
+        <br />
+        
+        <code><keyword>_Tb</keyword>: (type of block)块, 任意类型, 向量运算的方式, 会影响数据结构的对齐<samp>int, float, double, __m128, __m256, __m512</samp></code>
+        
+        <br />
+        
+        <code><keyword>思想</keyword>: 一个向量是由很多个块(_Block)组成, 最小的一种块是标量(_Ts)</code>
+        
+        <br />
+        
+        <code>
+           <keyword>SIMD</keyword>(single introduce multiples data): 可以想象一个模板按压下去就可以生产一样物品, 如果把这个模板造得更大按压一次可以生产多样物品, 这样m每次按压的效率会变快,
+            但使用更大的模板按压一次也会需要更多些体力, ...
+        </code>
+
+        <br />
+        
+        <div><keyword>核心:</keyword> 
+            <div class="function">
+                <code>vector_size&lt;_Ts, _Tb&gt;</code>
+            </div>
+            <div class="function">
+                <code>_Vector_operation&lt;_Ts, _Tb&gt;</code>
+                <div class="desc">向量的运算方式</div>
+            </div>
+        </div>
+        
+        <div><keyword>其他:</keyword>
+            <div class="function">
+                <code>_SIMD4_t&lt;_Ts&gt;</code>
+            </div>
+            <div class="function">
+                <code>_SIMD8_t&lt;_Ts&gt;</code>
+            </div>
+        </div>
+
+        <div><keyword>子向量:</keyword>
+            <div class="function">
+                <code><em>subvector&lt;_Ts,_Tb&gt;</em> = reference of vector <em>+</em> memory can discontinuity <em>+</em> auto_vector_operation&lt;_Ts,_Tb&gt;</code>
+            </div>
+        </div>
+        <div><keyword>向量(固定长度):</keyword>
+            <div class="function">
+                <code><em>vector&lt;_Ts,_Size,_Tb&gt;</em> = stack memory <em>+</em> fastest_vector_operation&lt;_Ts,_Tb&gt;</code>
+            </div>
+        </div>
+        <div><keyword>单位向量(固定长度):</keyword>
+            <div class="function">
+                <code><em>unit_vector&lt;_Ts,_Size,_Tb&gt;</em> = vector&lt;_Ts,_Size,_Tb&gt; <em>+</em> length is 1</code>
+            </div>
+        </div>
+        <div><keyword>向量(动态长度):</keyword>
+            <div class="function">
+                <code><em>vector_any&lt;_Ts,_Tb&gt;</em> = heap memory <em>+</em> fastest_vector_operation&lt;_Ts,_Tb&gt;</code>
+            </div>
+        </div>
+
+        <br />
+
+        <div>
+            <keyword>宏定义</keyword>:
+            <div class="function">
+                <macro>VECTORN</macro> vector&lt;_Ts,_Size,_Tb&gt;
+            </div>
+            <div class="function">
+                <macro>VECTOR2</macro> vector&lt;_Ts,2,_Tb&gt;
+            </div>
+            <div class="function">
+                <macro>VECTOR3</macro> vector&lt;_Ts,3,_Tb&gt;
+            </div>
+            <div class="function">
+                <macro>VECTOR4</macro> vector&lt;_Ts,4,_Tb&gt;
+            </div>
+            <div class="function">
+                <macro>UNIT_VECTORN</macro> unit_vector&lt;_Ts,_Size,_Tb&gt;
+            </div>
+            <div class="function">
+                <macro>UNIT_VECTOR3</macro> unit_vector&lt;_Ts,3,_Tb&gt;
+            </div>
+        </div>
+
+        <br />
+
+        <div><keyword>重要函数</keyword>: <br />
+            <div class="function">
+                <code>void vector::<em>for_each_*</em>(...)</code>
+                <div class="desc">其他运算的基石</div>
+            </div>
+             <div class="function">
+                 <code>dst_vector <em>shuffle</em>(src_vector, number, number, number, number, ...)</code>
+                <div class="desc">重组src_vector的元素 到 dst_vector</div>
+            </div>
+        </div>
+
+        <br />
+        <hr />
+
+        <table border="1" cellpadding="3" cellspacing="0" style="text-align:center">
+            <tr>
+                <td>引用转换(ref-cast)</td>
+                <td>subvector<_Ty, _Block></td>
+                <td>vector<_Ty, _Size, _Block></td>
+                <td>vector_any<_Ty, _Block></td>
+            </tr>
+            <tr>
+                <td class="struct">subvector<_Ty, _Block></td>
+                <td><strong style="color:green; font-weight:bold; font-size:25px">√</strong></td>
+                <td><strong style="color:red; font-weight:bold; font-size:25px">×</strong></td>
+                <td><strong style="color:red; font-weight:bold; font-size:25px">×</strong></td>
+            </tr>
+            <tr>
+                <td class="struct">vector<_Ty, _Size, _Block></td>
+                <td><strong style="color:green; font-weight:bold; font-size:25px">√</strong></td>
+                <td><strong style="color:orange; font-weight:bold; font-size:25px">>></strong></td>
+                <td><strong style="color:red; font-weight:bold; font-size:25px">×</strong></td>
+            </tr>
+            <tr>
+                <td class="struct">vector_any<_Ty, _Block></td>
+                <td><strong style="color:green; font-weight:bold; font-size:25px">√</strong></td>
+                <td><strong style="color:orange; font-weight:bold; font-size:25px">>></strong></td>
+                <td><strong style="color:red; font-weight:bold; font-size:25px">×(多次进入析构)</strong></td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    <code><strong style="color:green; font-weight:bold; font-size:25px">√</strong> 可以安全转换</code>
+                    <code><strong style="color:orange; font-weight:bold; font-size:25px">>></strong> 可以保守转换(目标类型大小<=源类型大小)</code>
+                    <code><strong style="color:red; font-weight:bold; font-size:25px">×</strong> 无法安全转换</code>
+                    <code>行:源类型&nbsp;&nbsp;列:目标类型</code>
+                </td>
+            </tr>
+        </table>
+       
+        <br />
+        <hr />
+
+        <code>subvector<_Ty, _Block></code>
+
+        <div class="struct">
+            <code>const_subvector<_Ty, _Block></code>
+            <div class="desc"><不可修改>元素的<子向量></div>
+            <div class="desc">任何向量都可以看作为<子向量>,包括内存不连续</div>
+            <div class="desc">万用向量</div>
+            <hr />
+
+            <div class="function">
+                <code>size_t <em>size</em>() const</code>
+                <div class="desc">向量长度</div>
+            </div>
+            <br />
+
+            <div class="function">
+                <code>const vector_size& <em>vsize</em>() const</code>
+                <div class="desc">详细向量长度</div>
+            </div>
+            <br />
+
+            <div class="function">
+                <code>size_t <em>block_offset</em>() const</code>
+                <div class="desc">向量起始地址左偏移于 块对齐边界 [bytes]</div>
+            </div>
+            <br />
+
+            <div class="function">
+                <code>bool <em>empty</em>() const</code>
+                <div class="desc">向量是空集</div>
+            </div>
+            <br />
+
+            <div class="function">
+                <code>bool <em>aligned</em>() const</code>
+                <div class="desc">向量起始地址是对齐的</div>
+            </div>
+            <br />
+
+            <div class="function">
+                <code>bool <em>pass_alignment_point</em>() const</code>
+                <div class="desc">向量内存 是否经过<对齐点></div>
+                <div class="desc">向量加速 必要条件</div>
+            </div>
+            <br />
+        </div>
+        <hr />
+
+        <div class="struct">
+            <code>subvector<_Ty, _Block></code>
+            <div class="desc"><可以修改>元素的<子向量></div>
+            <div class="desc">任何向量都可以看作为<子向量>,包括内存不连续</div>
+            <div class="desc">万用向量</div>
+            <hr />
+
+            <div class="function">
+                <code>...</code>
+            </div>
+            <br />
+        </div>
+        <hr />
+
+        <div class="struct">
+            <code>vector<_Ty, _Size, _Block></code>
+            <div class="descspec">__declspec(align(std::alignment_of_v<_Block>))</div>
+            <div class="desc">实现了所有运算符(除了位运算符)</div>
+            <hr />
+
+            <div class="function">
+                <code>subvector <em>operator()</em>(size_t _First, size_t _Last)</code>
+                <div class="desc">返回 向量[_First, _Last)</div>
+            </div>
+            <br />
+
+            <div class="function">
+                <code>vector<bool, _Size> <em>operator==</em>(const vector& _Right) const</code>
+                <div class="desc">*this[i] == _Right[i]</div>
+            </div>
+            <br />
+
+            <div class="function">
+                <code>vector<bool, _Size> <em>operator!=</em>(const vector& _Right) const</code>
+                <div class="desc">*this[i] != _Right[i]</div>
+            </div>
+            <br />
+
+            <div class="function">
+                <code>...</code>
+            </div>
+            <br />
+
+            <div class="function">
+                <code>vector <em>operator-</em>() const</code>
+                <div class="desc">negate(*this[i])</div>
+            </div>
+            <br />
+
+            <div class="function">
+                <code>vector <em>operator+</em>(const vector& _Right) const</code>
+                <div class="desc">*this[i] + _Right[i]</div>
+            </div>
+            <br />
+
+            <div class="function">
+                <code>vector <em>operator-</em>(const vector& _Right) const</code>
+                <div class="desc">*this[i] - _Right[i]</div>
+            </div>
+            <br />
+
+            <div class="function">
+                <code>...</code>
+            </div>
+            <br />
+
+            <div class="function">
+                <code>vector& <em>normalize</em>()</code>
+                <div class="desc">向量自身进行<单位化>, 调用此函数后(length(*this) == 1)</div>
+            </div>
+            <br />
+
+            <div class="function">
+                <code><strong>friend</strong> std::string <em>to_string</em>(const vector& _Left)</code>
+                <div class="desc">Format: "[v1, v1, v2, ..., vN]"</div>
+                <div class="desc">"[" + v[i]+" "  ... + "]"</div>
+            </div>
+            <br />
+
+            <div class="function">
+                <code><strong>friend</strong> std::ostream& <em>operator<<</em>(std::ostream& _Ostr, const vector& _Left)</code>
+            </div>
+            <br />
+        </div>
+        <hr />
+
+        <div class="struct">
+            <code>vector_any<_Ty, _Block, _Alloc></code>
+            <div class="desc">向量_任意长度</div>
+            <div class="desc">分配器(_Alloc)以块(_Block)为单位, 分配对齐了的内存</div>
+            <div class="desc">实现了所有运算符(除了位运算符)</div>
+            <div class="desc">很容易转换到vector<_Ty, _Size, _Block>模板类型</div>
+            <hr />
+
+            <div class="function">
+                <code>void <em>push_back</em>(const _Ty&)</code>
+            </div>
+            <br />
+
+            <div class="function">
+                <code>void <em>push_back</em>(_Ty&&)</code>
+            </div>
+            <br />
+
+            <div class="function">
+                <code>void <em>pop_back</em>()</code>
+            </div>
+            <br />
+
+            <div class="function">
+                <code>...</code>
+            </div>
+            <br />
+        </div>
+        <hr />
+    </body>
+</html>

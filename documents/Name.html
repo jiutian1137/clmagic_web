@@ -1,0 +1,75 @@
+<html>
+<head>
+    <style> .commenttag{ font-size: 12px; color:cornflowerblue; } 
+			.themetag{ font-size: 20px; color:dodgerblue; font-family:NSimSun; font-weight:bold; }
+			.contenttag{ font-size: 15px; color:deepskyblue; font-family:NSimSun; font-style:italic; line-height:25px; }
+    </style>
+</head>
+<body>
+    <div class="themetag">词的语义:</div>
+
+    <div class="contenttag" style="margin-left:40px; margin-top:20px;">
+        <div>首字母大写的词 给人的感觉是特殊的:</div>
+        <div>我们每当看到大写字母就会觉得这个东西很特别, G g B b C c, Great Wall, Human ...</div>
+        <div>为了标识某些特别的事物, 不适合表示行为 但是可以用于标识行为</div>
+    </div>
+
+    <div class="contenttag" style="margin-left:40px; margin-top:20px;">
+        <div>大写字母不适合视觉识别:</div>
+        <div>GREAT WALL, HUMAN, 因为大写字母的几何体都很相似(都很直,没有独特的弯曲)，但是他们很大很特别</div>
+    </div>
+
+    <div class="contenttag" style="margin-left:40px; margin-top:20px;">
+        <div>下划线是为了连接两个词, 并且也是一个特殊字符:</div>
+        <div>go to, go_to, Go to, Go_to, do homework, do_homework, do Homework, do_Homework，这样我们就可以像句子一样命名了</div>
+    </div>
+
+    <div class="contenttag" style="margin-left:40px; margin-top:20px;">
+        <div>无间隔的连词是为了合并两个词:</div>
+        <div>AABBterm, CosTheta, ThetaCos, ThetaA, ThetaB, ThetaAlpha, GreatWall,</div>
+        <div>合并与连接不一样，Great_Wall是两个名字分别是(非常长的某样事或物，事物是城或墙)被下划线连成一句, GreatWall严格是一个名字(长城)</div>
+    </div>
+
+
+    <div class="themetag" style="margin-top:40px;">命名:</div>
+
+    <div class="contenttag" style="margin-left:40px; margin-top:20px;">
+        <div>goToHisHome, processSomeThingAndAllocateMemory, cosAbsTheta, ... (驼峰命名)</div>
+        <div>我们分析他的语义: 普通的词 合并 特殊的词 再合并 特殊的词 ...</div>
+        <div>goToHisHome: 做/1特殊的做/2特殊的事物的/3特殊的事物, /1处的合并很诡异, 实际上我们可以简单修改下为gotoHisHome</div>
+        <div>gotoHisHome: 做/1特殊的事物的/2特殊的事物, 这样挺明确的。</div>
+        <div>processSomeThingAndAllocateMemory: 做/1特殊的/2特殊的事物/3特殊的/4特殊的做/5特殊的事物, 这个名字中用"And"是为了描述两个平等的事物要被执行, "/3"的合并就很奇怪 "/4"的合并有错误语义</div>
+        <div>驼峰命名的大问题是"只能存在一个普通语义(首个词)"，(且不论特殊语义不适合表示行为)因此"/4处的特殊做"语义无论如何也去不掉 所以不讲道理了。</div>
+        <div>但是如果"只需要描述 最多一个普通语义的词(而非句)"那么驼峰命名没有错误.</div>
+    </div>
+
+    <div class="contenttag" style="margin-left:40px; margin-top:20px;">
+        <div>GoldMaterial, GotoHisHome, ...(帕斯卡命名)</div>
+        <div>我们分析他的语义: 特殊的词 合并 特殊的词 再合并 特殊的词 ...</div>
+        <div>GoldMaterial: 特殊的/1特殊的事物, 这似乎很好</div>
+        <div>GotoHisHome: 特殊的做/1特殊的事物的/2特殊的事物, 如果确实是为了"标识而非做"某样事物 那么这样也似乎挺好</div>
+        <div>帕斯卡命名似乎很难挑出矛盾, 但是很明显的这是一种用于"标识特殊事物"的命名, 例如class的命名, 不建议但也可以用于表示行为, 观察 MakeGoldMaterial 与 make_GoldMaterial()</div>
+    </div>
+
+    <div class="contenttag" style="margin-left:40px; margin-top:20px;">
+        <div>_InIt _Function(_InIt _My_data, _InIt _My_size), ...（clang标准库命名）</div>
+        <div>我们分析他的语义: 函数名中用了两个强调语义（下划线起始,首字母大写）, 我们定义整个句中唯一最强调的词为"重要词"重要词的语义为"重要语义", 但这是否会有什么作用呢我们无法得知, 我们先检查是否存在矛盾,</div>
+        <div>函数参数列表(_My_data, _My_size): (/1重要的/2普通的事物, /1重要的/2普通的事物), 这种命名有着和驼峰命名相似的问题"只能存在一个重要语义"， 这种命名看上去可以说是"逆驼峰命名",</div>
+        <div>但是通常比驼峰命名要更好, 因为我们通常是想要强调某个事物 而不是希望忽略某个事物.</div>
+        <div>clang标准库之前的用过这样的命名(_Mydata,_Mysize)算是正规的"逆驼峰命名"吧, 合并语义, 同样的只能作用在只有一个重要语义时，但是对于变量 合并语义 比 连接语义更合理。</div>
+    </div>
+
+
+    <div class="themetag" style="margin-top:40px;">指南:</div>
+
+    <div class="contenttag" style="margin-left:40px; margin-top:20px;">
+        <div>genType: 驼峰命名很容易出现语义矛盾, 但有一种情况下表现得非常好"template<typename XXX></div>
+        <div>    "中, 有三种语境(一般语境,通用语境,实例语境)模板类型名需要"通用语境",</div>
+        <div>    所有的类名都是特殊语义(帕斯卡命名)此时刚好只需要一个额外的语义(通用), 例如genType(这个用法首次出现于GLSL中)</div>
+    </div>
+
+    <div class="contenttag" style="margin-left:40px; margin-top:20px;">    ...</div>
+
+    <div class="commenttag" style="margin-top:40px;">@LongJiangnan 2021~todaty</div>
+</body>
+</html>

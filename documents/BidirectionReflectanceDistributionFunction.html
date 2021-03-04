@@ -1,0 +1,46 @@
+﻿<html>
+    <head>
+        <title>Microfacet-BRDF-mathematical-model</title>
+        <style>
+            .orange {
+                color:orange;
+            }
+            redfont {
+                color:red
+            }
+        </style>
+    </head>
+
+    <body >
+        <table align="center" style="line-height:25px">
+            <tr><td align="center">
+                    <code>Inspiration Book &lt;&lt;A First Course inert Mathematical Modeling&gt;&gt; </code><br />
+                </td></tr>
+
+            <tr><td align="center">
+                    <code class="orange">Microfacet_BRDF = D(..)*F(..)*G(..) / [4*cos(thetaV)*cos(thetaL)]</code><br />
+                </td></tr>
+
+            <tr><td>
+                0. 符号: { <redfont>N</redfont>: 表面法线, <redfont>V</redfont>: 指向眼睛的单位向量, <redfont>L</redfont>: 指向光源的单位向量 }<br/>
+                1. 变量分类: { <br />
+                &nbsp;&nbsp;反射能量<redfont>E</redfont>,<br />
+                &nbsp;&nbsp;反射率<redfont>F</redfont>,<br />
+                &nbsp;&nbsp;微观表面影响<redfont>M</redfont>:{ M = D(..)*G(..) },<br />
+                &nbsp;&nbsp;视线与光方向影响<redfont>C</redfont>:{ C = V与N夹角(thetaV)*L与N夹角(thetaN) } }<br />
+                1.2 变量之间相互关系: 反射到眼睛的能量 = E*F*M*C*c = E*F*D(..)*G(..)*thetaV*thetaN*c <br />
+                2.  求解1.2关系式中的 项c<br />
+                ...<br />
+                5. 改进模型: { 视线与光方向影响<redfont>C</redfont>:{ C = cos(thetaV)*cos(thetaN) } 因为已[知法线时][求夹角][不如求夹角的余弦],<br />
+                    又通过观察得知现象[夹角in[0[deg],90[deg]], 夹角越大能量越强, 夹角越大余弦越小], 因此{ C = 1/[cos(thetaV)*cos(thetaN)] } }<br />
+                6.重组变量关系: 反射到眼睛的能量 = E*F*M*C*c = E*F*D(..)*G(..)*c / [cos(thetaV)*cos(thetaN)]<br />
+                7.重解6的关系式: c = 1/4
+                </td></tr>
+            
+            <tr><td>
+                背景: 
+                </td></tr>
+        </table>
+        
+    </body>
+</html>
