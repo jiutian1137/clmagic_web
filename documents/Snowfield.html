@@ -1,0 +1,47 @@
+﻿<html>
+<head>
+    <style> .commenttag{ font-size: 12px; color:cornflowerblue; } 
+			.themetag{ font-size: 20px; color:darkblue; font-family:NSimSun; font-weight:bold; }
+			.contenttag{ font-size: 15px; color:midnightblue; font-family:NSimSun; font-style:italic; line-height:25px; }
+	</style>
+</head>
+<body style="margin-left:10%; text-align:left; background-color:slategray">
+	
+	<div class="commenttag">2021.03.17</div>
+	
+	<div class="themetag" style="color: snow;">
+		雪的厚度 = f(...)
+	</div>
+	
+	<div class="contenttag" style="margin-left:40px;">
+		<div>雪地 有点复杂 越想越复杂了。我想了想用 雪厚度 = f(高度,高度变化率)，</div>
+		<div>但是随着时间的变化 地形会不一样了 这样一个简单的函数 很难了。</div>
+		
+		<div>但是还是可以做到的，类似于统计学的思想。例如 我们都知道 雪地是平整的 非常平非常平</div>
+		<div>为什么那些凹凸的地方也全部平了呢，高的地方 雪粒子滑下去了很多 但还是会积累少许的雪，</div>
+		<div>然后低的地方因为积雪越来越高了以至于追上了高的地方 然后他们的高度变化率就等于0了</div>
+		<div>就成了平地了 并且雪会均匀的覆着在这样的平地上(自然现象)。</div>
+	</div>
+
+	<div class="contenttag" style="margin-left:40px;margin-top:20px; color:snow; font-style:normal">
+		<div>如果不用厚度缓存只使用一个简单的函数，那么</div>
+	</div>
+		
+	<div class="contenttag" style="margin-left:40px;margin-top:20px; color:snow; font-style:normal">
+		<div>(1)小雪时，我们可以展现我们所观察到的现象(考虑局部的高度变化率)</div>
+		<div><code>雪的厚度 = f(高度变化率);</code></div>
+	</div>
+
+	<div class="contenttag" style="margin-left:40px;margin-top:20px; color:snow; font-style:normal">
+		<div>(2)特别大的雪, 就是一块完整的平地</div>
+		<div><code>雪的厚度 = (雪的厚度+最低高度) - 高度;</code></div>
+		<div><code>雪的厚度 = max(0,雪的厚度);</code></div>
+	</div>
+    
+	<div class="contenttag" style="margin-left:40px;margin-top:20px; color:snow; font-style:normal">
+		<div>(3)一般雪时, 我们就必须忽略局部高度变化，只能专注在全局高度变化，全局高度变化那么就可以忽略高度变化 只专注 高度..</div>
+		<div><code>雪的厚度=f(地形高度)</code></div>
+	</div>
+
+</body>
+</html>
