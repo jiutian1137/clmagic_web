@@ -1,0 +1,127 @@
+<html>
+<body>
+  
+  <svg width="1000px" height="1000px" 
+       style="position:absolute; margin-left:0px; margin-top:0px">
+    
+    <radialGradient id="orbit" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+      <stop offset="99%" style="stop-color:grey;stop-opacity:0"/>
+      <stop offset="100%" style="stop-color:grey;stop-opacity:1"/>
+    </radialGradient>
+
+    <radialGradient id="sun" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+      <stop offset="0%" style="stop-color:lightyellow;"></stop>
+      <stop offset="90%" style="stop-color:lightgoldenrodyellow;"></stop>
+      <stop offset="100%" style="stop-color:red;stop-opacity:0"></stop>
+    </radialGradient>
+
+    <radialGradient id="earth" cx="80%" cy="50%" r="80%" fx="50%" fy="50%">
+      <stop offset="0%" style="stop-color:blue;"></stop>
+      <stop offset="80%" style="stop-color:skyblue;"></stop>
+      <stop offset="100%" style="stop-color:darkorange;stop-opacity:0"></stop>
+    </radialGradient>
+
+    <rect style="fill:black" x="0px" y="0px" width="100%" height="100%"/>
+
+    <line style="stroke: red; stroke-width: 1px"
+       x1="500px" y1="450px"
+       x2="133.32px" y2="500px"/>
+
+    <circle style="fill:url(#sun)"
+       cx="500px" cy="500px" 
+       r="100px"/>
+    <text style="font-size:10px; font-weight:bold; fill:rgb(255,150,0)" 
+       x="412px" y="488px">emittive power = integral(0,inf, blackbody_spectral_emittive_power)</text>
+    <text style="font-size:10px; font-weight:bold; fill:rgb(255,150,0)" 
+       x="412px" y="500px">67419544.84[W/m2]</text>
+    <text style="font-size:10px; font-weight:bold; fill:rgb(170,170,0)" 
+       x="412px" y="510px">emittive intensity = emittive power / pi</text>
+    <text style="font-size:10px; font-weight:bold; fill:rgb(170,170,0)" 
+       x="412px" y="522px">20102156.8[W/m2/sr]</text>
+
+    <ellipse style="fill:url(#orbit)"
+       cx="500px" cy="500px" 
+       rx="406.68px" 
+       ry="230px"/>
+    <!-- ry*(1.0+0.0167) -->
+
+    <circle style="fill:url(#earth)"
+       cx="93.32px" cy="500px"
+       r="40px"/>
+
+
+    <line style="stroke: red; stroke-width: 1px"
+       x1="500px" y1="550px"
+       x2="133.32px" y2="500px"/>
+    <line style="stroke: red; stroke-width: 1px"
+       x1="500px" y1="400px"
+       x2="133.32px" y2="500px"/>
+    <line style="stroke: red; stroke-width: 1px"
+       x1="500px" y1="600px"
+       x2="133.32px" y2="500px"/>
+    <text style="font-size:10px; font-weight:bold; fill:rgb(255,0,0)"
+       x="250px" y="450px">solid angle:</text>
+    <text style="font-size:10px; font-weight:bold; fill:rgb(255,0,0)"
+       x="250px" y="462px">6.788311628258329e-05[sr]</text>
+
+    <text style="font-size:10px; font-weight:bold; fill:rgb(150,150,0)" 
+       x="63px" y="488px">emittive intensity = </text>
+    <text style="font-size:10px; font-weight:bold; fill:rgb(150,150,0)" 
+       x="63px" y="500px">in emittive intensity * solid angle from in source disk</text>
+    <text style="font-size:10px; font-weight:bold; fill:rgb(150,150,0)" 
+       x="150px" y="512px">project to this unit area surface</text>
+    <text style="font-size:10px; font-weight:bold; fill:rgb(150,150,0)" 
+       x="64px" y="524px">1366[W/m2]</text>
+
+    <line style="stroke:grey; stroke-width: 1px"
+       x1="70px" y1="450px"
+       x2="45px" y2="500px"/>
+    <text style="font-size:10px; fill:grey"
+       x="2px" y="470px">6.45*pow(10,6)[m]</text>
+    <line style="stroke:grey; stroke-width: 1px"
+       x1="620px" y1="400px"
+       x2="620px" y2="500px"/>
+    <text style="font-size:10px; fill:grey"
+       x="630px" y="450px">6.96*pow(10,8)[m]</text>
+    <line style="stroke:grey; stroke-width: 1px"
+       x1="130px" y1="420px"
+       x2="500px" y2="395px"/>
+    <text style="font-size:10px; fill:grey"
+       x="300px" y="400px">1.496*pow(10,11)[m]</text>
+
+  </svg>
+
+  <canvas id="rays"
+     width="1000" height="1000" style="position:absolute; margin-left:0px; margin-top:0px; width:1000px; height:1000px; z-index:0">
+  </canvas>
+  <script type="text/javascript">
+    let canvas = document.getElementById("rays");
+    let context = canvas.getContext("2d");
+    //let context = new CanvasRenderingContext2D();
+    context.lineWidth = 1;
+
+    for (let a = 0.0; a <= Math.PI*2; a += Math.PI/128) {
+      let c1 = [Math.cos(a), Math.sin(a)];
+      let p = [c1[0]*90+500, c1[1]*90+500];
+      for (let i = 0; i != 20; ++i) {
+        let angle = Math.random()*Math.PI*1.2 - Math.PI*1.2/2;
+        let c2 = [Math.cos(angle),Math.sin(angle)];
+        let RE = 0, IM = 1;
+        let d = [c1[RE]*c2[RE]-c1[IM]*c2[IM], c1[RE]*c2[IM]+c1[IM]*c2[RE]];
+        let interacted = false;
+        if (interacted) {
+          context.strokeStyle = "rgb(250,250,0)";
+          context.globalAlpha = 0.8;
+        } else {
+          context.strokeStyle = "rgb(250,250,210)";
+          context.globalAlpha = 0.05;
+        }
+        context.beginPath();
+        context.moveTo(p[0], 1000 - p[1]);
+        context.lineTo(p[0] + d[0]*1000, p[1] + d[1]*1000);
+        context.stroke();
+      }
+    }
+  </script>
+</body>
+</html>
